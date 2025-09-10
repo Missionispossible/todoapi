@@ -1,27 +1,21 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer } = require("apollo-server-micro");
 const typeDefs = require("./schema/typeDefs");
 const resolvers = require("./schema/resolvers");
-const mongoose = require("mongoose");
 
-const MONGODB_URI = process.env.MONGODB_URI;
+// Apollo Server for serverless (Vercel)
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  introspection: true,
+});
 
-const startServer = async () => {
-  try {
-    await mongoose.connect(MONGODB_URI);
-    console.log("✅ Connected to MongoDB Atlas");
-    
-    const server = new ApolloServer({
-      typeDefs,
-      resolvers,
-      introspection: true,
-      playground: true,
-    });
+let started = false;
 
-    return server.createHandler();
-  } catch (error) {
-    console.error("❌ MongoDB connection error:", error);
-    throw error;
+module.exports = async (req, res) => {
+  if (!started) {
+    await server.start();
+    started = true;
   }
+  const handler = server.createHandler({ path: "/api/graphql" });
+  return handler(req, res);
 };
-
-module.exports = startServer();
