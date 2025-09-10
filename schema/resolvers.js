@@ -44,7 +44,11 @@ const resolvers = {
   Query: {
     getAllCategories: () => categories,
 
-    getTasks: (_, { id, status, limit, skip }) => {
+    getTasks: (_, { filter }) => {
+      const id = filter && filter.id;
+      const status = filter && filter.status;
+      const limit = filter && filter.limit;
+      const skip = filter && filter.skip;
       // If ID is provided, return specific task
       if (id) {
         const task = tasks.find((t) => t.id === id);

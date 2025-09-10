@@ -35,6 +35,12 @@ const typeDefs = gql`
   # ------------------
   # Input Types
   # ------------------
+  input TaskFilter {
+    id: ID
+    status: [TaskStatus]
+    limit: Int
+    skip: Int
+  }
   input TaskInput {
     title: String!
     description: String
@@ -56,7 +62,7 @@ const typeDefs = gql`
   # ------------------
   type Query {
     getAllCategories: [Category!]!
-    getTasks(id: ID, status: [TaskStatus], limit: Int, skip: Int): [Task!]!
+    getTasks(filter: TaskFilter): [Task!]!
     getTasksByCategory(categoryId: ID!): [Task!]!
   }
 
