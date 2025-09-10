@@ -2,8 +2,10 @@ const { ApolloServer } = require("apollo-server");
 const typeDefs = require("./schema/typeDefs");
 const resolvers = require("./schema/resolvers");
 const mongoose = require("mongoose");
+require('dotenv').config(); // ADD THIS LINE
 
-const MONGODB_URI = "mongodb+srv://SREERAG:Iopjklbnm%401@cluster0.nv5wgtd.mongodb.net/taskmanager?retryWrites=true&w=majority&appName=Cluster0";
+const MONGODB_URI = process.env.MONGODB_URI; // USE ENV VARIABLE
+const PORT = process.env.PORT || 4000; // ADD PORT
 
 const connectDB = async () => {
   try {
@@ -21,23 +23,11 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    // FORCE ENABLE PLAYGROUND - ADD THIS:
     introspection: true,
-    playground: {
-      settings: {
-        'schema.polling.enable': false,
-      },
-    },
-    // Also add this to handle root path:
-    context: ({ req }) => {
-      // Redirect root to playground
-      if (req.url === '/') {
-        // This will help trigger the playground
-      }
-    }
+    playground: true,
   });
 
-  server.listen().then(({ url }) => {
+  server.listen(PORT).then(({ url }) => {
     console.log(`🚀 API running at ${url}`);
     console.log(`📋 GraphQL Playground: ${url}graphql`);
   });
