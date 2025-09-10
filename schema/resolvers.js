@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto"); // REPLACE uuid with built-in crypto
 
 // -----------------
 // In-memory storage
@@ -84,7 +84,7 @@ const resolvers = {
       if (!input.name || input.name.trim() === "") {
         throw new Error("Category name is required");
       }
-      const newCategory = { id: uuidv4(), name: input.name };
+      const newCategory = { id: crypto.randomUUID(), name: input.name }; // CHANGED
       categories.push(newCategory);
       return newCategory;
     },
@@ -96,7 +96,7 @@ const resolvers = {
         : null;
 
       const newTask = {
-        id: uuidv4(),
+        id: crypto.randomUUID(), // CHANGED
         title: input.title,
         description: input.description || "",
         status: mapStatusToInt(input.status),
@@ -141,7 +141,7 @@ const resolvers = {
       if (!task) throw new Error("Task not found");
 
       const subTask = {
-        id: uuidv4(),
+        id: crypto.randomUUID(), // CHANGED
         title: input.title,
         completed: false,
       };
