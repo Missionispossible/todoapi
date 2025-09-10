@@ -22,10 +22,14 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    // ADD THESE 2 LINES:
+    introspection: true,    // ← Enable introspection
+    playground: true,       // ← Enable playground UI
   });
 
   server.listen().then(({ url }) => {
     console.log(`🚀 API running at ${url}`);
+    console.log(`📋 GraphQL Playground: ${url}graphql`); // Added this line too
   });
 };
 
