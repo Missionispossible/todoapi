@@ -1,21 +1,16 @@
-const { ApolloServer } = require("apollo-server-micro");
-const typeDefs = require("./schema/typeDefs");
-const resolvers = require("./schema/resolvers");
+const { ApolloServer } = require("apollo-server");
+const typeDefs = require("./schema/typeDefs");  // FIXED: Added dot (./)
+const resolvers = require("./schema/resolvers"); // FIXED: Added dot (./)
 
-// Apollo Server for serverless (Vercel)
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  introspection: true,
+    typeDefs,
+    resolvers,
+    // ADD THESE LINES TO ENABLE PLAYGROUND:
+    introspection: true,    // ← Enable introspection
+    playground: true,       // ← Enable playground UI
 });
 
-let started = false;
-
-module.exports = async (req, res) => {
-  if (!started) {
-    await server.start();
-    started = true;
-  }
-  const handler = server.createHandler({ path: "/api/graphql" });
-  return handler(req, res);
-};
+server.listen().then(({ url }) => {
+    console.log(`🚀 API running at ${url}`);  // FIXED: Used backticks (`)
+    console.log(`📋 GraphQL Playground: ${url}graphql`);
+});
